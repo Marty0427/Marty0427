@@ -1,0 +1,26 @@
+Every loyalty card, boarding pass and ticket in one place — on your phone, and only on your phone.
+
+PocketPass scans the barcode from a card once and shows it back whenever you need it: at the till, at the gate, at the door. No account, no sign-in, no internet connection required.
+
+SCAN ANYTHING WITH A CODE
+Point the camera at a card and PocketPass reads it: QR, Aztec, PDF417, Code 128, Code 39, EAN-13, EAN-8, UPC-A, UPC-E and ITF-14. That covers supermarket loyalty cards, gym memberships, coffee shop stamps, boarding passes, rail and event tickets, and library cards.
+
+ALREADY HAVE IT ON SCREEN?
+Import the code straight from a photo or a screenshot — an emailed boarding pass never needs printing. Or type the number in by hand; PocketPass checks it as you type, completes the check digit if the card omits it, and shows you the symbol before you save.
+
+BUILT FOR THE MOMENT YOU USE IT
+The code fills the screen and the brightness goes up automatically, because a dim phone is the usual reason a scanner refuses to read. Auto-lock is held off while a card is open, so it will not dim mid-queue. Your usual brightness comes straight back when you leave.
+
+STAY ORGANISED
+Sort cards into categories, mark the ones you use most as favourites, and search by name, shop, notes or the number itself. Tickets and coupons can carry an expiry date, with a badge when one is close or past.
+
+YOURS, AND ONLY YOURS
+There is no server behind PocketPass. Cards are stored on your device, protected by iOS encryption while the phone is locked, and nothing is uploaded, shared or analysed. You can lock the app itself behind Face ID, Touch ID or your passcode.
+
+BACKUPS YOU CONTROL
+Export your cards as a plain, readable JSON file and keep it wherever you like. Restoring merges it back in without creating duplicates. Nothing is locked into a format only this app can read.
+
+WORKS OFFLINE, ALWAYS
+Aeroplane mode, a basement car park, a festival field with no signal — the codes are already on the device, so they are there regardless.
+
+PocketPass does not read your other apps, your location or your contacts. It uses the camera only while the scanner is open, and Apple's photo picker hands it a single image when you import one.

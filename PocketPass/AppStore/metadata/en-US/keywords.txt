@@ -1,0 +1,1 @@
+loyalty,card,barcode,qr,wallet,pass,ticket,boarding,membership,scanner,offline,code

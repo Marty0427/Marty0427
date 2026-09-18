@@ -1,0 +1,7 @@
+First release.
+
+- Scan loyalty cards, boarding passes, tickets and membership barcodes
+- Import a code from a photo or screenshot, or type it in by hand
+- Screen brightens automatically while a code is on show
+- Categories, favourites and search
+- Optional Face ID lock, and JSON backup you control
