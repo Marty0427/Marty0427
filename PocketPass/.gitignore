@@ -17,6 +17,17 @@ xcuserdata/
 # macOS
 .DS_Store
 
-# Fastlane / distribution artefacts
+# Signing material — never commit these
+*.p8
+*.p12
+*.mobileprovision
+*.cer
+
+# fastlane
 fastlane/report.xml
-fastlane/screenshots/**/*.png
+fastlane/Preview.html
+fastlane/test_output/
+fastlane/README.md
+
+# Screenshots under fastlane/screenshots are deliberately NOT ignored: `deliver` uploads
+# them from the repository, so they have to be committed.

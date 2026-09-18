@@ -1,0 +1,176 @@
+# PocketPass release automation.
+#
+# Authentication is by App Store Connect API key throughout — no Apple ID, no password, no
+# two-factor prompt, and the same path works locally and on CI. Set these before running:
+#
+#   ASC_KEY_ID          the key's ID, e.g. 2X9R4HXF34
+#   ASC_ISSUER_ID       the issuer UUID shown above the key list
+#   ASC_KEY_CONTENT     the .p8 file, base64 encoded: base64 -i AuthKey_XXX.p8 | pbcopy
+#   DEVELOPER_TEAM_ID   the ten character team ID used for signing
+#
+# Signing uses Xcode's cloud signing (`-allowProvisioningUpdates`) with the same API key, so
+# there is no certificate repository to set up and nothing secret is stored in git.
+
+require "base64"
+require "fileutils"
+require "shellwords"
+
+default_platform(:ios)
+
+PROJECT = "PocketPass.xcodeproj".freeze
+SCHEME = "PocketPass".freeze
+OUTPUT_DIRECTORY = "build".freeze
+
+platform :ios do
+  desc "Run the unit tests on a simulator"
+  lane :test do
+    run_tests(
+      project: PROJECT,
+      scheme: SCHEME,
+      devices: [ENV["POCKETPASS_TEST_DEVICE"] || "iPhone 16"],
+      code_coverage: true,
+      result_bundle: true,
+      output_directory: "#{OUTPUT_DIRECTORY}/test-results"
+    )
+  end
+
+  desc "Build a signed archive and upload it to TestFlight"
+  lane :beta do
+    api_key = connect_api_key
+
+    bump_build_number(api_key)
+    archive(api_key)
+
+    upload_to_testflight(
+      api_key: api_key,
+      # Internal testers only. External testing needs Apple's review, so it stays a
+      # deliberate step in App Store Connect rather than a side effect of a push.
+      distribute_external: false,
+      skip_waiting_for_build_processing: true
+    )
+
+    UI.success("Uploaded to TestFlight. Processing takes a few minutes before it appears.")
+  end
+
+  desc "Upload a build and the listing metadata to App Store Connect"
+  desc "Does NOT submit for review unless you pass submit:true"
+  lane :release do |options|
+    api_key = connect_api_key
+    submit = options.fetch(:submit, false)
+
+    bump_build_number(api_key)
+    archive(api_key)
+
+    upload_to_app_store(
+      api_key: api_key,
+      # Releasing is a person's decision, so the default stops at "ready to submit".
+      submit_for_review: submit,
+      automatic_release: false,
+      force: true, # skip the HTML preview prompt; the metadata is in git and reviewable there
+      precheck_include_in_app_purchases: false,
+      skip_screenshots: !screenshots_present?,
+      overwrite_screenshots: screenshots_present?,
+      submission_information: {
+        add_id_info_uses_idfa: false,
+        export_compliance_uses_encryption: false,
+        content_rights_contains_third_party_content: false
+      }
+    )
+
+    if submit
+      UI.success("Submitted for review.")
+    else
+      UI.success("Build and metadata uploaded. Submit for review in App Store Connect when ready.")
+    end
+  end
+
+  desc "Upload only the listing text and screenshots, without building"
+  lane :metadata do
+    upload_to_app_store(
+      api_key: connect_api_key,
+      skip_binary_upload: true,
+      skip_app_version_update: false,
+      force: true,
+      precheck_include_in_app_purchases: false,
+      skip_screenshots: !screenshots_present?,
+      overwrite_screenshots: screenshots_present?
+    )
+  end
+end
+
+# Helpers. Methods defined at the top level of a Fastfile are callable from every lane.
+
+# Authenticates with App Store Connect using the API key from the environment.
+def connect_api_key
+  app_store_connect_api_key(
+    key_id: fetch_env("ASC_KEY_ID"),
+    issuer_id: fetch_env("ASC_ISSUER_ID"),
+    key_content: fetch_env("ASC_KEY_CONTENT"),
+    is_key_content_base64: true,
+    in_house: false
+  )
+end
+
+# Archives and exports an App Store build, signing through Xcode cloud signing.
+def archive(_api_key)
+  key_path = write_api_key_file
+  team_id = fetch_env("DEVELOPER_TEAM_ID")
+
+  auth_args = [
+    "-allowProvisioningUpdates",
+    "-authenticationKeyPath", key_path.shellescape,
+    "-authenticationKeyID", fetch_env("ASC_KEY_ID"),
+    "-authenticationKeyIssuerID", fetch_env("ASC_ISSUER_ID")
+  ].join(" ")
+
+  build_app(
+    project: PROJECT,
+    scheme: SCHEME,
+    configuration: "Release",
+    export_method: "app-store",
+    output_directory: OUTPUT_DIRECTORY,
+    output_name: "PocketPass.ipa",
+    clean: true,
+    xcargs: "#{auth_args} DEVELOPMENT_TEAM=#{team_id}",
+    export_xcargs: auth_args,
+    export_options: {
+      method: "app-store",
+      teamID: team_id,
+      signingStyle: "automatic",
+      uploadSymbols: true,
+      # No bitcode since Xcode 14, but being explicit avoids a warning on older toolchains.
+      uploadBitcode: false
+    }
+  )
+end
+
+# Build numbers must increase for every upload; ask App Store Connect what the last one was
+# rather than tracking it in git, so a build from any machine lands in the right place.
+def bump_build_number(api_key)
+  latest = latest_testflight_build_number(
+    api_key: api_key,
+    initial_build_number: 0,
+    app_identifier: CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+  )
+  increment_build_number(xcodeproj: PROJECT, build_number: latest + 1)
+rescue StandardError => e
+  # A brand new app has no builds yet, and that is not a failure.
+  UI.important("Could not read the latest TestFlight build number (#{e.message}); leaving it as is.")
+end
+
+# Writes the base64 API key out for xcodebuild, which needs it as a file on disk.
+def write_api_key_file
+  path = File.expand_path("../#{OUTPUT_DIRECTORY}/private_keys/AuthKey_#{fetch_env('ASC_KEY_ID')}.p8", __dir__)
+  FileUtils.mkdir_p(File.dirname(path))
+  File.write(path, Base64.decode64(fetch_env("ASC_KEY_CONTENT")))
+  File.chmod(0o600, path)
+  path
+end
+
+def screenshots_present?
+  !Dir.glob(File.expand_path("../fastlane/screenshots/**/*.{png,jpg,jpeg}", __dir__)).empty?
+end
+
+def fetch_env(name)
+  ENV[name] || UI.user_error!("#{name} is not set. See the comment at the top of the Fastfile.")
+end

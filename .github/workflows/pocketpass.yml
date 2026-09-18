@@ -1,0 +1,64 @@
+name: PocketPass
+
+# Manual only, on purpose. macOS runners are billed at a premium, and a release should be a
+# decision rather than a side effect of a push. Add a `push:` trigger for the `test` lane once
+# the project is known to build.
+on:
+  workflow_dispatch:
+    inputs:
+      lane:
+        description: "What to run"
+        type: choice
+        default: test
+        options:
+          - test      # unit tests on a simulator, no signing, no secrets needed
+          - beta      # build, sign and upload to TestFlight
+          - release   # build, sign, upload the build and the listing metadata
+          - metadata  # upload the listing text only, no build
+
+jobs:
+  run:
+    runs-on: macos-15
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: PocketPass
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          working-directory: PocketPass
+          bundler-cache: true
+
+      - name: Run ${{ inputs.lane }}
+        run: bundle exec fastlane ${{ inputs.lane }}
+        env:
+          # Only the signing lanes need these; `test` runs without any secrets set.
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
+          DEVELOPER_TEAM_ID: ${{ secrets.DEVELOPER_TEAM_ID }}
+          POCKETPASS_BUNDLE_ID: ${{ vars.POCKETPASS_BUNDLE_ID }}
+          FASTLANE_SKIP_UPDATE_CHECK: "1"
+          FASTLANE_HIDE_CHANGELOG: "1"
+
+      - name: Upload build artefacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pocketpass-${{ inputs.lane }}
+          path: |
+            PocketPass/build/*.ipa
+            PocketPass/build/*.app.dSYM.zip
+            PocketPass/build/test-results
+          if-no-files-found: ignore
+          retention-days: 7

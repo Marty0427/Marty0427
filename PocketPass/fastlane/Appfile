@@ -1,0 +1,16 @@
+# Identifiers for App Store Connect.
+#
+# Everything here can be overridden with an environment variable so nothing account-specific
+# has to be committed. Change the fallbacks once you own the identifiers.
+
+app_identifier(ENV["POCKETPASS_BUNDLE_ID"] || "com.marty0427.PocketPass")
+
+# Developer Portal team (used for signing). Find it at developer.apple.com > Membership.
+team_id(ENV["DEVELOPER_TEAM_ID"]) if ENV["DEVELOPER_TEAM_ID"]
+
+# App Store Connect team, only needed when your Apple ID belongs to more than one.
+itc_team_id(ENV["ASC_TEAM_ID"]) if ENV["ASC_TEAM_ID"]
+
+# Not needed when authenticating with an App Store Connect API key, which is what the
+# Fastfile does. Set it only if you fall back to Apple ID authentication.
+apple_id(ENV["FASTLANE_APPLE_ID"]) if ENV["FASTLANE_APPLE_ID"]

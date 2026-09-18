@@ -1,0 +1,13 @@
+PocketPass stores barcodes locally on the device. There is no account, no server and no
+sign-in, so no demo credentials are needed.
+
+To exercise the app:
+
+- Scanner (device only): tap + > Scan Code and point the camera at any QR code or retail
+  barcode. The simulator has no camera and the app says so rather than hanging.
+- Anywhere: tap + > Enter Manually, choose format EAN-13 and enter 5901234123457, then save.
+  Opening the card shows the barcode at full brightness.
+- Import from Photos works with any screenshot containing a barcode.
+
+The camera is used only while the scanner screen is open and no frames are stored or
+transmitted. The app makes no network requests of any kind.

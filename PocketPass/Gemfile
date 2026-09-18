@@ -1,0 +1,4 @@
+source "https://rubygems.org"
+
+# Release automation. Run `bundle install` once, then `bundle exec fastlane <lane>`.
+gem "fastlane", "~> 2.220"

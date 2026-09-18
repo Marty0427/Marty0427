@@ -283,6 +283,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = PocketPass;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSCameraUsageDescription = "PocketPass uses the camera to read the barcode on a card or ticket. Frames stay on this device.";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Unlock your stored cards.";
@@ -299,6 +300,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
@@ -312,6 +314,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = PocketPass;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSCameraUsageDescription = "PocketPass uses the camera to read the barcode on a card or ticket. Frames stay on this device.";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Unlock your stored cards.";
@@ -328,6 +331,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
 		};
@@ -345,6 +349,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PocketPass.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PocketPass";
 			};
 			name = Debug;
@@ -363,6 +368,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PocketPass.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PocketPass";
 			};
 			name = Release;
