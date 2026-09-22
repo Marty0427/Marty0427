@@ -29,8 +29,9 @@ Users and Access → Integrations → App Store Connect API → **+**, role **Ap
 
 ## 3. First build on a Mac
 
-The project has never been compiled — it was written in a Linux container with no Swift
-toolchain. Expect to fix a few things the compiler finds on the first open.
+The app compiles and its 87 unit tests pass — CI proved that on a macOS runner (Xcode 26.3,
+iOS Simulator) before anyone opened it in Xcode. What no simulator can exercise is the camera,
+so the device pass below is still the real first test.
 
 ```sh
 cd PocketPass
@@ -39,6 +40,8 @@ open PocketPass.xcodeproj          # Xcode 16 or newer
 
 - [ ] Signing & Capabilities → select your team, leave signing automatic.
 - [ ] Build and run on a real device (⌘R). The scanner needs a camera; the simulator has none.
+      A free Apple ID signs a build that runs on your own device for seven days — the paid
+      programme is only needed for TestFlight and the store.
 - [ ] `bundle install && bundle exec fastlane test` — the unit tests should pass.
 - [ ] Scan a real QR code, a Code 128 membership card and an EAN-13 retail card.
 - [ ] Show a generated EAN-13 and Code 128 to a second phone's scanner, at normal brightness

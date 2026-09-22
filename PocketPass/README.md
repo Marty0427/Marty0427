@@ -37,8 +37,13 @@ Scripts/test.sh                # or: xcodebuild test -scheme PocketPass -destina
 Scanning needs a real device; the simulator has no camera, and the scanner says so rather
 than hanging. Importing from Photos and every other screen work in the simulator.
 
-> **Note:** this project was written on Linux, where no Swift toolchain or Xcode is available,
-> so it has not been compiled or run yet. Expect to fix small things on the first build.
+CI builds the app and runs the 87 unit tests on a simulator for every push touching
+`PocketPass/` — see [the workflow](../.github/workflows/pocketpass.yml). It needs no Apple
+account and no secrets.
+
+> **Note:** this project was written on Linux, with no Swift toolchain available, so it was
+> first compiled by CI rather than by hand. The build and the tests pass; what no simulator
+> can confirm is the camera scanner, the brightness boost and Face ID, which need a device.
 
 ## How it is put together
 
