@@ -1,9 +1,15 @@
 name: PocketPass
 
-# Manual only, on purpose. macOS runners are billed at a premium, and a release should be a
-# decision rather than a side effect of a push. Add a `push:` trigger for the `test` lane once
-# the project is known to build.
 on:
+  # Compiling and testing needs no Apple account and no secrets, and macOS runners are
+  # free on a public repository, so this runs on every push that touches the app.
+  push:
+    branches:
+      - "claude/**"
+    paths:
+      - "PocketPass/**"
+      - ".github/workflows/pocketpass.yml"
+  # Signing and uploading stay manual: a release should be a decision, not a side effect.
   workflow_dispatch:
     inputs:
       lane:
@@ -11,19 +17,91 @@ on:
         type: choice
         default: test
         options:
-          - test      # unit tests on a simulator, no signing, no secrets needed
+          - test      # build and unit test on a simulator — no signing, no secrets
           - beta      # build, sign and upload to TestFlight
           - release   # build, sign, upload the build and the listing metadata
           - metadata  # upload the listing text only, no build
 
+concurrency:
+  group: pocketpass-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  run:
+  test:
+    name: Build and test
+    if: github.event_name == 'push' || inputs.lane == 'test'
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      # Runner images change which simulators they carry, so ask rather than hard-code one.
+      - name: Pick a simulator
+        id: simulator
+        run: |
+          DEVICE=$(xcrun simctl list devices available -j | python3 -c '
+          import json, sys
+          devices = json.load(sys.stdin)["devices"]
+          names = [d["name"] for runtime, items in devices.items() if "iOS" in runtime for d in items]
+          iphones = [n for n in names if n.startswith("iPhone")]
+          print(iphones[-1] if iphones else (names[0] if names else ""))
+          ')
+          if [ -z "$DEVICE" ]; then echo "No iOS simulator on this runner"; exit 1; fi
+          echo "Using $DEVICE"
+          echo "device=$DEVICE" >> "$GITHUB_OUTPUT"
+
+      - name: xcodebuild test
+        working-directory: PocketPass
+        run: |
+          set -o pipefail
+          mkdir -p build
+          xcodebuild test \
+            -project PocketPass.xcodeproj \
+            -scheme PocketPass \
+            -destination "platform=iOS Simulator,name=${{ steps.simulator.outputs.device }}" \
+            -resultBundlePath build/PocketPass.xcresult \
+            CODE_SIGNING_ALLOWED=NO \
+            2>&1 | tee build/xcodebuild.log
+
+      # The point of this job is the error list, so put it where it can be read without
+      # scrolling a 10,000 line log.
+      - name: Summarise failures
+        if: failure()
+        working-directory: PocketPass
+        run: |
+          {
+            echo "### Compiler and test failures"
+            echo
+            echo '```'
+            grep -E "(error:|failed|Failing tests)" build/xcodebuild.log \
+              | grep -v "^ *$" | sort -u | head -n 60 || echo "No lines matched; see the full log artefact."
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload log and results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pocketpass-test
+          path: |
+            PocketPass/build/xcodebuild.log
+            PocketPass/build/PocketPass.xcresult
+          if-no-files-found: ignore
+          retention-days: 7
+
+  ship:
+    name: ${{ inputs.lane }}
+    if: github.event_name == 'workflow_dispatch' && inputs.lane != 'test'
     runs-on: macos-15
     timeout-minutes: 45
     defaults:
       run:
         working-directory: PocketPass
-
     steps:
       - uses: actions/checkout@v4
 
@@ -37,12 +115,13 @@ jobs:
         with:
           ruby-version: "3.3"
           working-directory: PocketPass
-          bundler-cache: true
+
+      - name: Install fastlane
+        run: bundle install --jobs 4
 
       - name: Run ${{ inputs.lane }}
         run: bundle exec fastlane ${{ inputs.lane }}
         env:
-          # Only the signing lanes need these; `test` runs without any secrets set.
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
@@ -59,6 +138,5 @@ jobs:
           path: |
             PocketPass/build/*.ipa
             PocketPass/build/*.app.dSYM.zip
-            PocketPass/build/test-results
           if-no-files-found: ignore
           retention-days: 7
