@@ -92,6 +92,7 @@ struct WalletView: View {
                         CardTileView(card: card)
                     }
                     .buttonStyle(.plain)
+                    .accessibilityIdentifier("cardTile")
                     .contextMenu {
                         Button {
                             store.toggleFavorite(card)
@@ -193,6 +194,7 @@ struct WalletView: View {
             } label: {
                 Label("Settings", systemImage: "gearshape")
             }
+            .accessibilityIdentifier("settingsButton")
         }
         ToolbarItem(placement: .primaryAction) {
             Menu {
@@ -214,6 +216,7 @@ struct WalletView: View {
             } label: {
                 Label("Add Card", systemImage: "plus")
             }
+            .accessibilityIdentifier("addButton")
         }
     }
 

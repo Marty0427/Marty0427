@@ -14,11 +14,19 @@
 			remoteGlobalIDString = 1A0000000000000000000004;
 			remoteInfo = PocketPass;
 		};
+		1A0000000000000000000022 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1A0000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1A0000000000000000000004;
+			remoteInfo = PocketPass;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		1A0000000000000000000006 /* PocketPass.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PocketPass.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A0000000000000000000007 /* PocketPassTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PocketPassTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A000000000000000000001B /* PocketPassUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PocketPassUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -30,6 +38,11 @@
 		1A0000000000000000000009 /* PocketPassTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = PocketPassTests;
+			sourceTree = "<group>";
+		};
+		1A000000000000000000001C /* PocketPassUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PocketPassUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -49,6 +62,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1A000000000000000000001F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -58,6 +78,7 @@
 				1A0000000000000000000008 /* PocketPass */,
 				1A0000000000000000000009 /* PocketPassTests */,
 				1A0000000000000000000003 /* Products */,
+				1A000000000000000000001C /* PocketPassUITests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -66,6 +87,7 @@
 			children = (
 				1A0000000000000000000006 /* PocketPass.app */,
 				1A0000000000000000000007 /* PocketPassTests.xctest */,
+				1A000000000000000000001B /* PocketPassUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -118,6 +140,29 @@
 			productReference = 1A0000000000000000000007 /* PocketPassTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		1A000000000000000000001D /* PocketPassUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1A0000000000000000000023 /* Build configuration list for PBXNativeTarget "PocketPassUITests" */;
+			buildPhases = (
+				1A000000000000000000001E /* Sources */,
+				1A000000000000000000001F /* Frameworks */,
+				1A0000000000000000000020 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1A0000000000000000000021 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				1A000000000000000000001C /* PocketPassUITests */,
+			);
+			name = PocketPassUITests;
+			packageProductDependencies = (
+			);
+			productName = PocketPassUITests;
+			productReference = 1A000000000000000000001B /* PocketPassUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -132,6 +177,10 @@
 						CreatedOnToolsVersion = 16.0;
 					};
 					1A0000000000000000000005 = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = 1A0000000000000000000004;
+					};
+					1A000000000000000000001D = {
 						CreatedOnToolsVersion = 16.0;
 						TestTargetID = 1A0000000000000000000004;
 					};
@@ -153,6 +202,7 @@
 			targets = (
 				1A0000000000000000000004 /* PocketPass */,
 				1A0000000000000000000005 /* PocketPassTests */,
+				1A000000000000000000001D /* PocketPassUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -166,6 +216,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		1A0000000000000000000011 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1A0000000000000000000020 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -189,6 +246,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1A000000000000000000001E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -196,6 +260,11 @@
 			isa = PBXTargetDependency;
 			target = 1A0000000000000000000004 /* PocketPass */;
 			targetProxy = 1A000000000000000000000E /* PBXContainerItemProxy */;
+		};
+		1A0000000000000000000021 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1A0000000000000000000004 /* PocketPass */;
+			targetProxy = 1A0000000000000000000022 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -373,6 +442,40 @@
 			};
 			name = Release;
 		};
+		1A0000000000000000000024 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.marty0427.PocketPassUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = PocketPass;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		1A0000000000000000000025 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.marty0427.PocketPassUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = PocketPass;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -399,6 +502,15 @@
 			buildConfigurations = (
 				1A0000000000000000000019 /* Debug */,
 				1A000000000000000000001A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1A0000000000000000000023 /* Build configuration list for PBXNativeTarget "PocketPassUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1A0000000000000000000024 /* Debug */,
+				1A0000000000000000000025 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

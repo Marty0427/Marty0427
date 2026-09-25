@@ -41,19 +41,37 @@ jobs:
           xcode-version: latest-stable
 
       # Runner images change which simulators they carry, so ask rather than hard-code one.
+      # A Pro Max is preferred because its screen is the 6.9" size the App Store asks for.
       - name: Pick a simulator
         id: simulator
         run: |
-          DEVICE=$(xcrun simctl list devices available -j | python3 -c '
+          read -r UDID DEVICE <<< "$(xcrun simctl list devices available -j | python3 -c '
           import json, sys
-          devices = json.load(sys.stdin)["devices"]
-          names = [d["name"] for runtime, items in devices.items() if "iOS" in runtime for d in items]
-          iphones = [n for n in names if n.startswith("iPhone")]
-          print(iphones[-1] if iphones else (names[0] if names else ""))
-          ')
-          if [ -z "$DEVICE" ]; then echo "No iOS simulator on this runner"; exit 1; fi
-          echo "Using $DEVICE"
+          runtimes = json.load(sys.stdin)["devices"]
+          phones = [d for runtime, items in runtimes.items() if "iOS" in runtime
+                    for d in items if d["name"].startswith("iPhone")]
+          if not phones:
+              raise SystemExit("no iOS simulator on this runner")
+          ranked = sorted(phones, key=lambda d: ("Pro Max" in d["name"], "Pro" in d["name"], d["name"]))
+          chosen = ranked[-1]
+          print(chosen["udid"], chosen["name"])
+          ')"
+          echo "Using $DEVICE ($UDID)"
+          echo "udid=$UDID" >> "$GITHUB_OUTPUT"
           echo "device=$DEVICE" >> "$GITHUB_OUTPUT"
+
+      # Cosmetic only, and never worth failing a build over: a clean status bar is what
+      # App Store screenshots are expected to show.
+      - name: Dress the status bar
+        continue-on-error: true
+        run: |
+          xcrun simctl boot "${{ steps.simulator.outputs.udid }}" || true
+          xcrun simctl bootstatus "${{ steps.simulator.outputs.udid }}" -b || true
+          xcrun simctl status_bar "${{ steps.simulator.outputs.udid }}" override \
+            --time "9:41" \
+            --batteryState charged --batteryLevel 100 \
+            --cellularMode active --cellularBars 4 \
+            --wifiMode active --wifiBars 3 || true
 
       - name: xcodebuild test
         working-directory: PocketPass
@@ -63,10 +81,63 @@ jobs:
           xcodebuild test \
             -project PocketPass.xcodeproj \
             -scheme PocketPass \
-            -destination "platform=iOS Simulator,name=${{ steps.simulator.outputs.device }}" \
+            -destination "id=${{ steps.simulator.outputs.udid }}" \
             -resultBundlePath build/PocketPass.xcresult \
             CODE_SIGNING_ALLOWED=NO \
             2>&1 | tee build/xcodebuild.log
+
+      # The UI tests photograph each screen; pull those out of the result bundle as PNGs.
+      - name: Extract screenshots
+        if: always()
+        working-directory: PocketPass
+        run: |
+          xcrun xcresulttool export attachments \
+            --path build/PocketPass.xcresult \
+            --output-path build/screenshots || echo "Attachment export failed; the result bundle is still uploaded."
+
+          # Attachments come out with generated names; the manifest carries the readable ones.
+          # Renaming is a convenience, so nothing in here may fail the job.
+          python3 - <<'PY'
+          import json, pathlib
+
+          def walk(node):
+              if isinstance(node, dict):
+                  if "exportedFileName" in node:
+                      yield node
+                  for value in node.values():
+                      yield from walk(value)
+              elif isinstance(node, list):
+                  for value in node:
+                      yield from walk(value)
+
+          try:
+              directory = pathlib.Path("build/screenshots")
+              manifest = directory / "manifest.json"
+              if manifest.exists():
+                  for attachment in walk(json.loads(manifest.read_text())):
+                      source = directory / attachment["exportedFileName"]
+                      name = attachment.get("suggestedHumanReadableName") or source.name
+                      if not source.exists():
+                          continue
+                      target = directory / (name if name.lower().endswith(".png") else name + ".png")
+                      source.rename(target)
+                      print(f"{source.name} -> {target.name}")
+              else:
+                  print("No manifest; leaving the exported names as they are.")
+          except Exception as error:
+              print(f"Renaming skipped: {error}")
+          PY
+
+          ls -la build/screenshots || true
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pocketpass-screenshots
+          path: PocketPass/build/screenshots/*.png
+          if-no-files-found: warn
+          retention-days: 30
 
       # The point of this job is the error list, so put it where it can be read without
       # scrolling a 10,000 line log.
