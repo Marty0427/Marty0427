@@ -32,6 +32,8 @@ jobs:
     if: github.event_name == 'push' || inputs.lane == 'test'
     runs-on: macos-15
     timeout-minutes: 30
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -98,7 +100,7 @@ jobs:
           # Attachments come out with generated names; the manifest carries the readable ones.
           # Renaming is a convenience, so nothing in here may fail the job.
           python3 - <<'PY'
-          import json, pathlib
+          import json, pathlib, re
 
           def walk(node):
               if isinstance(node, dict):
@@ -119,6 +121,9 @@ jobs:
                       name = attachment.get("suggestedHumanReadableName") or source.name
                       if not source.exists():
                           continue
+                      # Xcode appends an index and a UUID; the leading "01-wallet" is the name.
+                      readable = re.match(r"(\d{2}-[a-z]+)", name)
+                      name = f"{readable.group(1)}.png" if readable else name
                       target = directory / (name if name.lower().endswith(".png") else name + ".png")
                       source.rename(target)
                       print(f"{source.name} -> {target.name}")
@@ -129,6 +134,26 @@ jobs:
           PY
 
           ls -la build/screenshots || true
+
+      # `deliver` uploads screenshots from the repository, not from a CI artefact, so this
+      # is where they have to live. [skip ci] stops the commit triggering another run.
+      - name: Commit screenshots
+        if: github.event_name == 'push' && success()
+        run: |
+          mkdir -p PocketPass/fastlane/screenshots/en-US
+          cp PocketPass/build/screenshots/*.png PocketPass/fastlane/screenshots/en-US/ || exit 0
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add PocketPass/fastlane/screenshots/en-US
+
+          if git diff --cached --quiet; then
+            echo "Screenshots unchanged."
+            exit 0
+          fi
+
+          git commit -m "Update App Store screenshots from CI [skip ci]"
+          git push origin HEAD:${GITHUB_REF_NAME}
 
       - name: Upload screenshots
         if: always()
