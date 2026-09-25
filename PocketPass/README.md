@@ -37,6 +37,9 @@ Scripts/test.sh                # or: xcodebuild test -scheme PocketPass -destina
 Scanning needs a real device; the simulator has no camera, and the scanner says so rather
 than hanging. Importing from Photos and every other screen work in the simulator.
 
+**To put it on your own iPhone** — free, no paid Apple account —
+see [docs/RUN-ON-YOUR-IPHONE.md](docs/RUN-ON-YOUR-IPHONE.md).
+
 CI builds the app and runs the 87 unit tests on a simulator for every push touching
 `PocketPass/` — see [the workflow](../.github/workflows/pocketpass.yml). It needs no Apple
 account and no secrets.
