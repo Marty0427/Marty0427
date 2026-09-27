@@ -1,0 +1,78 @@
+name: PocketPass Web
+
+on:
+  push:
+    paths:
+      - "PocketPassWeb/**"
+      - ".github/workflows/pocketpass-web.yml"
+  # Publishing is manual: this repository's Pages site is marty0427.github.io, so deploying
+  # is a decision about that address, not a side effect of a commit.
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: "Publish to GitHub Pages after the tests pass"
+        type: boolean
+        default: false
+
+concurrency:
+  group: pocketpass-web-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: PocketPassWeb
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      # No browser, no dependencies, about a second.
+      - name: Barcode tests
+        run: npm test
+
+      - name: Install Playwright
+        run: |
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+
+      - name: Interface tests
+        run: npm run test:ui
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pocketpass-web-screenshots
+          path: PocketPassWeb/build/screenshots/*.png
+          if-no-files-found: warn
+          retention-days: 14
+
+  deploy:
+    name: Publish to Pages
+    if: github.event_name == 'workflow_dispatch' && inputs.deploy
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: PocketPassWeb
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

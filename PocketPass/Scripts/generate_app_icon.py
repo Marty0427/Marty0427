@@ -6,7 +6,10 @@ without a design tool. It is rendered at 2x and box-filtered down, which gives c
 edges without any imaging dependency.
 
 Usage:
-    python3 Scripts/generate_app_icon.py [output.png]
+    python3 Scripts/generate_app_icon.py [output.png] [size] [--maskable]
+
+`--maskable` shrinks the artwork so nothing important is lost when a launcher crops the icon
+to a circle or a squircle.
 """
 
 from __future__ import annotations
@@ -134,9 +137,29 @@ def encode_png(width: int, height: int, rows: list[bytes]) -> bytes:
     )
 
 
+def scale_layout(size: int, inset: float) -> None:
+    """Re-computes the layout constants for another canvas size."""
+    global SIZE, CARD_RECT, CARD_RADIUS, QR_RECT, BARCODE_RECT, BAR_WIDTHS
+    factor = size / 1024
+    centre = 1024 / 2
+
+    def squeeze(value: float) -> float:
+        return (value - centre) * inset + centre
+
+    CARD_RECT = tuple(squeeze(v) * factor for v in CARD_RECT)
+    QR_RECT = tuple(squeeze(v) * factor for v in QR_RECT)
+    BARCODE_RECT = tuple(squeeze(v) * factor for v in BARCODE_RECT)
+    CARD_RADIUS = CARD_RADIUS * inset * factor
+    BAR_WIDTHS = [w * inset * factor for w in BAR_WIDTHS]
+    SIZE = size
+
+
 def main() -> int:
     default = Path(__file__).resolve().parent.parent / "PocketPass" / "Assets.xcassets" / "AppIcon.appiconset" / "AppIcon.png"
     output = Path(sys.argv[1]) if len(sys.argv) > 1 else default
+    size = int(sys.argv[2]) if len(sys.argv) > 2 and sys.argv[2].isdigit() else 1024
+    inset = 0.78 if "--maskable" in sys.argv else 1.0
+    scale_layout(size, inset)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_bytes(render())
     print(f"Wrote {output} ({output.stat().st_size} bytes)")

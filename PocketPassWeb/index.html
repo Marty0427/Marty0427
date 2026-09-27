@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PocketPass</title>
+<meta name="description" content="Keep loyalty cards, tickets and boarding passes on your phone. Works offline, stored only on your device.">
+<meta name="theme-color" content="#14608f">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PocketPass">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ───────────────────────────── wallet ───────────────────────────── -->
+<main id="view-wallet" class="view">
+  <header class="app-bar">
+    <button type="button" class="icon-button" id="open-settings" aria-label="Settings">⚙︎</button>
+    <h1>Cards</h1>
+    <button type="button" class="icon-button" id="open-add" aria-label="Add a card">＋</button>
+  </header>
+
+  <div class="wallet-controls">
+    <label class="search">
+      <span class="sr-only">Search cards</span>
+      <input type="search" id="search" placeholder="Search cards" autocomplete="off" enterkeyhint="search">
+    </label>
+    <div class="chips" id="category-chips" role="group" aria-label="Filter by category"></div>
+  </div>
+
+  <div id="install-hint" class="banner" hidden>
+    <p><strong>Add PocketPass to your Home Screen.</strong> <span id="install-hint-text"></span></p>
+    <div class="banner-actions">
+      <button type="button" class="button small" id="install-app" hidden>Install</button>
+      <button type="button" class="button small ghost" id="dismiss-install">Not now</button>
+    </div>
+  </div>
+
+  <div id="card-list" class="card-list"></div>
+
+  <div id="wallet-empty" class="empty" hidden>
+    <p class="empty-icon">🎫</p>
+    <h2>No cards yet</h2>
+    <p>Add a loyalty card, a ticket or a boarding pass and it is here whenever you need it — offline, no account.</p>
+    <button type="button" class="button primary" id="empty-scan">Scan a card</button>
+    <button type="button" class="button ghost" id="empty-manual">Enter a code by hand</button>
+  </div>
+
+  <p id="wallet-no-matches" class="empty small" hidden>Nothing matches that search.</p>
+</main>
+
+<!-- ───────────────────────────── card detail ───────────────────────────── -->
+<section id="view-card" class="view" hidden>
+  <header class="app-bar">
+    <button type="button" class="icon-button" data-back aria-label="Back">‹</button>
+    <h1 id="card-title">Card</h1>
+    <button type="button" class="icon-button" id="card-menu-button" aria-label="More actions">⋯</button>
+  </header>
+
+  <div class="card-stage">
+    <div class="symbol-sheet">
+      <div class="symbol" id="card-symbol"></div>
+      <p class="symbol-text" id="card-readable"></p>
+    </div>
+    <p class="brightness-note" id="brightness-note">
+      Turn your screen brightness up for the scanner. A web page can’t do that for you.
+    </p>
+  </div>
+
+  <div class="card-body">
+    <h2 id="card-name"></h2>
+    <p id="card-org" class="muted"></p>
+    <p id="card-expiry" class="badge" hidden></p>
+
+    <div class="row-buttons">
+      <button type="button" class="button" id="copy-code">Copy code</button>
+      <button type="button" class="button" id="toggle-favourite">Favourite</button>
+    </div>
+
+    <dl class="detail-list" id="card-details"></dl>
+
+    <div class="row-buttons">
+      <button type="button" class="button" id="edit-card">Edit</button>
+      <button type="button" class="button danger" id="delete-card">Delete</button>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────────── editor ───────────────────────────── -->
+<section id="view-editor" class="view" hidden>
+  <header class="app-bar">
+    <button type="button" class="icon-button" data-back aria-label="Cancel">✕</button>
+    <h1 id="editor-title">New card</h1>
+    <button type="button" class="text-button" id="save-card">Save</button>
+  </header>
+
+  <form id="editor-form" class="form" novalidate>
+    <fieldset>
+      <legend>Code</legend>
+      <label class="field">
+        <span>Code</span>
+        <input type="text" id="field-payload" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text">
+      </label>
+      <label class="field">
+        <span>Format</span>
+        <select id="field-symbology"></select>
+      </label>
+      <p class="field-note" id="payload-note"></p>
+    </fieldset>
+
+    <fieldset id="preview-block">
+      <legend>Preview</legend>
+      <div class="symbol-sheet compact">
+        <div class="symbol" id="editor-symbol"></div>
+        <p class="symbol-text" id="editor-readable"></p>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Details</legend>
+      <label class="field">
+        <span>Name</span>
+        <input type="text" id="field-name" placeholder="Clubcard" autocomplete="off">
+      </label>
+      <label class="field">
+        <span>Issuer</span>
+        <input type="text" id="field-organization" placeholder="Tesco" autocomplete="off">
+      </label>
+      <label class="field">
+        <span>Category</span>
+        <select id="field-category"></select>
+      </label>
+      <label class="field switch">
+        <span>Favourite</span>
+        <input type="checkbox" id="field-favourite">
+      </label>
+      <label class="field switch">
+        <span>Has an expiry date</span>
+        <input type="checkbox" id="field-has-expiry">
+      </label>
+      <label class="field" id="expiry-field" hidden>
+        <span>Expires</span>
+        <input type="date" id="field-expiry">
+      </label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Colour</legend>
+      <div class="theme-grid" id="theme-grid" role="radiogroup" aria-label="Card colour"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Notes</legend>
+      <label class="field">
+        <span class="sr-only">Notes</span>
+        <textarea id="field-notes" rows="3" placeholder="Seat 14A"></textarea>
+      </label>
+      <p class="field-note">Cards stay in this browser. Nothing is uploaded.</p>
+    </fieldset>
+  </form>
+</section>
+
+<!-- ───────────────────────────── scanner ───────────────────────────── -->
+<section id="view-scanner" class="view dark" hidden>
+  <header class="app-bar">
+    <button type="button" class="icon-button" data-back aria-label="Cancel">✕</button>
+    <h1>Scan a code</h1>
+    <span class="icon-button placeholder" aria-hidden="true"></span>
+  </header>
+
+  <div class="scanner-stage">
+    <video id="scanner-video" playsinline muted></video>
+    <div class="scan-window" aria-hidden="true"></div>
+    <p class="scanner-hint" id="scanner-hint">Line the card’s code up inside the frame.</p>
+  </div>
+</section>
+
+<!-- ───────────────────────────── settings ───────────────────────────── -->
+<section id="view-settings" class="view" hidden>
+  <header class="app-bar">
+    <button type="button" class="icon-button" data-back aria-label="Back">‹</button>
+    <h1>Settings</h1>
+    <span class="icon-button placeholder" aria-hidden="true"></span>
+  </header>
+
+  <div class="form">
+    <fieldset>
+      <legend>Showing a card</legend>
+      <label class="field switch">
+        <span>Keep the screen awake</span>
+        <input type="checkbox" id="setting-keep-awake">
+      </label>
+      <p class="field-note">
+        Stops the screen dimming while a code is open, where the browser allows it. Screen
+        brightness itself cannot be changed by a web page — that is a limit of the web, not a
+        setting hiding somewhere.
+      </p>
+    </fieldset>
+
+    <fieldset>
+      <legend>Your data</legend>
+      <button type="button" class="button" id="export-backup">Export backup</button>
+      <label class="button file-button">
+        Restore from backup
+        <input type="file" id="import-backup" accept="application/json,.json" hidden>
+      </label>
+      <p class="field-note" id="storage-note"></p>
+    </fieldset>
+
+    <fieldset>
+      <legend>About</legend>
+      <p class="field-note">
+        PocketPass keeps every card in this browser. There is no account, no server and no
+        analytics, and the app makes no network requests after it has loaded. The camera is
+        used only while the scanner is open, and frames are read on the device.
+      </p>
+      <p class="field-note">
+        Backups are the same format the iOS version writes, so a file from either one restores
+        into the other.
+      </p>
+      <p class="field-note" id="version-note"></p>
+    </fieldset>
+  </div>
+</section>
+
+<!-- ───────────────────────────── shared UI ───────────────────────────── -->
+<div id="sheet" class="sheet" hidden>
+  <div class="sheet-panel" role="dialog" aria-modal="true" aria-label="Add a card">
+    <button type="button" class="sheet-item" id="action-scan"><span>📷</span> Scan with the camera</button>
+    <label class="sheet-item" for="import-image"><span>🖼️</span> Read a screenshot</label>
+    <input type="file" id="import-image" accept="image/*" hidden>
+    <button type="button" class="sheet-item" id="action-manual"><span>⌨️</span> Enter a code by hand</button>
+    <button type="button" class="sheet-item cancel" id="action-cancel">Cancel</button>
+  </div>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
