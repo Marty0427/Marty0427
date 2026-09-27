@@ -2,11 +2,12 @@ name: PocketPass Web
 
 on:
   push:
+    branches: ["**"]
     paths:
       - "PocketPassWeb/**"
       - ".github/workflows/pocketpass-web.yml"
-  # Publishing is manual: this repository's Pages site is marty0427.github.io, so deploying
-  # is a decision about that address, not a side effect of a commit.
+  # Reaching the default branch publishes to marty0427.github.io. This dispatch is for
+  # republishing without a commit, or for trying a deploy from another branch.
   workflow_dispatch:
     inputs:
       deploy:
@@ -56,7 +57,11 @@ jobs:
 
   deploy:
     name: Publish to Pages
-    if: github.event_name == 'workflow_dispatch' && inputs.deploy
+    # Landing on the default branch publishes; a dispatch can publish from anywhere, though
+    # the github-pages environment usually only permits the default branch.
+    if: >-
+      github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+      || (github.event_name == 'workflow_dispatch' && inputs.deploy)
     needs: test
     runs-on: ubuntu-latest
     permissions:
@@ -68,7 +73,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Turns Pages on if it is not already, rather than making it a manual settings step.
+      # If the token is not allowed to, this fails with a clear message and Settings → Pages
+      # (source: GitHub Actions) does the same job.
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - uses: actions/upload-pages-artifact@v3
         with:
