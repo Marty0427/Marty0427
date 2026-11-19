@@ -1,0 +1,371 @@
+{
+ "realized_over_vix_signal_days": {
+  "mean": 0.587,
+  "median": 0.54,
+  "rms": 0.632
+ },
+ "author_window_grid": [
+  {
+   "itm_rule": 0.0,
+   "iv_mult": 0.4,
+   "ret_pct_from_2024-05-17": 136.6,
+   "maxdd_pct_from_2024-05-17": -10.5,
+   "ret_pct_from_2025-04-01": 87.1,
+   "maxdd_pct_from_2025-04-01": -7.7,
+   "trades": 322,
+   "median_premium_usd": 126,
+   "avg_itm_depth": 0.48,
+   "expectancy_on_premium": 25.9
+  },
+  {
+   "itm_rule": 0.0,
+   "iv_mult": 0.5,
+   "ret_pct_from_2024-05-17": 57.0,
+   "maxdd_pct_from_2024-05-17": -24.3,
+   "ret_pct_from_2025-04-01": 39.9,
+   "maxdd_pct_from_2025-04-01": -19.6,
+   "trades": 322,
+   "median_premium_usd": 151,
+   "avg_itm_depth": 0.48,
+   "expectancy_on_premium": 5.6
+  },
+  {
+   "itm_rule": 0.0,
+   "iv_mult": 0.6,
+   "ret_pct_from_2024-05-17": -23.2,
+   "maxdd_pct_from_2024-05-17": -51.2,
+   "ret_pct_from_2025-04-01": -7.4,
+   "maxdd_pct_from_2025-04-01": -46.0,
+   "trades": 322,
+   "median_premium_usd": 177,
+   "avg_itm_depth": 0.48,
+   "expectancy_on_premium": -9.0
+  },
+  {
+   "itm_rule": 0.0,
+   "iv_mult": 0.7,
+   "ret_pct_from_2024-05-17": -103.6,
+   "maxdd_pct_from_2024-05-17": -111.1,
+   "ret_pct_from_2025-04-01": -54.9,
+   "maxdd_pct_from_2025-04-01": -74.4,
+   "trades": 322,
+   "median_premium_usd": 201,
+   "avg_itm_depth": 0.48,
+   "expectancy_on_premium": -20.0
+  },
+  {
+   "itm_rule": 0.0,
+   "iv_mult": 0.8,
+   "ret_pct_from_2024-05-17": -184.2,
+   "maxdd_pct_from_2024-05-17": -190.1,
+   "ret_pct_from_2025-04-01": -102.5,
+   "maxdd_pct_from_2025-04-01": -105.6,
+   "trades": 322,
+   "median_premium_usd": 226,
+   "avg_itm_depth": 0.48,
+   "expectancy_on_premium": -28.7
+  },
+  {
+   "itm_rule": 0.5,
+   "iv_mult": 0.4,
+   "ret_pct_from_2024-05-17": 142.0,
+   "maxdd_pct_from_2024-05-17": -11.4,
+   "ret_pct_from_2025-04-01": 92.9,
+   "maxdd_pct_from_2025-04-01": -8.3,
+   "trades": 322,
+   "median_premium_usd": 159,
+   "avg_itm_depth": 0.98,
+   "expectancy_on_premium": 22.2
+  },
+  {
+   "itm_rule": 0.5,
+   "iv_mult": 0.5,
+   "ret_pct_from_2024-05-17": 66.1,
+   "maxdd_pct_from_2024-05-17": -24.4,
+   "ret_pct_from_2025-04-01": 47.4,
+   "maxdd_pct_from_2025-04-01": -16.0,
+   "trades": 322,
+   "median_premium_usd": 181,
+   "avg_itm_depth": 0.98,
+   "expectancy_on_premium": 6.5
+  },
+  {
+   "itm_rule": 0.5,
+   "iv_mult": 0.6,
+   "ret_pct_from_2024-05-17": -11.4,
+   "maxdd_pct_from_2024-05-17": -47.8,
+   "ret_pct_from_2025-04-01": 1.2,
+   "maxdd_pct_from_2025-04-01": -41.4,
+   "trades": 322,
+   "median_premium_usd": 204,
+   "avg_itm_depth": 0.98,
+   "expectancy_on_premium": -5.8
+  },
+  {
+   "itm_rule": 0.5,
+   "iv_mult": 0.7,
+   "ret_pct_from_2024-05-17": -90.0,
+   "maxdd_pct_from_2024-05-17": -98.4,
+   "ret_pct_from_2025-04-01": -45.5,
+   "maxdd_pct_from_2025-04-01": -68.9,
+   "trades": 322,
+   "median_premium_usd": 229,
+   "avg_itm_depth": 0.98,
+   "expectancy_on_premium": -15.5
+  },
+  {
+   "itm_rule": 0.5,
+   "iv_mult": 0.8,
+   "ret_pct_from_2024-05-17": -169.2,
+   "maxdd_pct_from_2024-05-17": -175.2,
+   "ret_pct_from_2025-04-01": -92.5,
+   "maxdd_pct_from_2025-04-01": -98.9,
+   "trades": 322,
+   "median_premium_usd": 253,
+   "avg_itm_depth": 0.98,
+   "expectancy_on_premium": -23.5
+  },
+  {
+   "itm_rule": 1.0,
+   "iv_mult": 0.4,
+   "ret_pct_from_2024-05-17": 137.1,
+   "maxdd_pct_from_2024-05-17": -12.0,
+   "ret_pct_from_2025-04-01": 89.9,
+   "maxdd_pct_from_2025-04-01": -8.9,
+   "trades": 322,
+   "median_premium_usd": 193,
+   "avg_itm_depth": 1.48,
+   "expectancy_on_premium": 18.8
+  },
+  {
+   "itm_rule": 1.0,
+   "iv_mult": 0.5,
+   "ret_pct_from_2024-05-17": 67.0,
+   "maxdd_pct_from_2024-05-17": -25.3,
+   "ret_pct_from_2025-04-01": 47.5,
+   "maxdd_pct_from_2025-04-01": -16.3,
+   "trades": 322,
+   "median_premium_usd": 215,
+   "avg_itm_depth": 1.48,
+   "expectancy_on_premium": 6.7
+  },
+  {
+   "itm_rule": 1.0,
+   "iv_mult": 0.6,
+   "ret_pct_from_2024-05-17": -6.5,
+   "maxdd_pct_from_2024-05-17": -48.0,
+   "ret_pct_from_2025-04-01": 3.3,
+   "maxdd_pct_from_2025-04-01": -40.3,
+   "trades": 322,
+   "median_premium_usd": 236,
+   "avg_itm_depth": 1.48,
+   "expectancy_on_premium": -3.5
+  },
+  {
+   "itm_rule": 1.0,
+   "iv_mult": 0.7,
+   "ret_pct_from_2024-05-17": -82.1,
+   "maxdd_pct_from_2024-05-17": -91.6,
+   "ret_pct_from_2025-04-01": -41.8,
+   "maxdd_pct_from_2025-04-01": -66.8,
+   "trades": 322,
+   "median_premium_usd": 261,
+   "avg_itm_depth": 1.48,
+   "expectancy_on_premium": -12.0
+  },
+  {
+   "itm_rule": 1.0,
+   "iv_mult": 0.8,
+   "ret_pct_from_2024-05-17": -159.1,
+   "maxdd_pct_from_2024-05-17": -165.6,
+   "ret_pct_from_2025-04-01": -87.6,
+   "maxdd_pct_from_2025-04-01": -95.8,
+   "trades": 322,
+   "median_premium_usd": 283,
+   "avg_itm_depth": 1.48,
+   "expectancy_on_premium": -19.2
+  }
+ ],
+ "full_history_iv_0.5": {
+  "trades": 3459,
+  "total_pnl": 69392,
+  "losing_years": 9,
+  "max_dd_usd": -14126,
+  "longest_underwater_days": 3563,
+  "t_stat": 4.28,
+  "expectancy_on_premium": 7.7,
+  "by_year": {
+   "2007": {
+    "pnl": 5954,
+    "exp": 12.6
+   },
+   "2008": {
+    "pnl": 19036,
+    "exp": 34.7
+   },
+   "2009": {
+    "pnl": -2207,
+    "exp": -3.0
+   },
+   "2010": {
+    "pnl": -3041,
+    "exp": -4.4
+   },
+   "2011": {
+    "pnl": 1228,
+    "exp": 3.3
+   },
+   "2012": {
+    "pnl": -2808,
+    "exp": -4.1
+   },
+   "2013": {
+    "pnl": -737,
+    "exp": -0.1
+   },
+   "2014": {
+    "pnl": -1695,
+    "exp": -1.8
+   },
+   "2015": {
+    "pnl": 3858,
+    "exp": 8.0
+   },
+   "2016": {
+    "pnl": -1993,
+    "exp": -2.6
+   },
+   "2017": {
+    "pnl": -4326,
+    "exp": -7.2
+   },
+   "2018": {
+    "pnl": 13962,
+    "exp": 25.7
+   },
+   "2019": {
+    "pnl": -3876,
+    "exp": -6.9
+   },
+   "2020": {
+    "pnl": 3156,
+    "exp": 6.9
+   },
+   "2021": {
+    "pnl": 373,
+    "exp": 1.5
+   },
+   "2022": {
+    "pnl": 21433,
+    "exp": 40.1
+   },
+   "2023": {
+    "pnl": 9350,
+    "exp": 17.1
+   },
+   "2024": {
+    "pnl": 2034,
+    "exp": 4.5
+   },
+   "2025": {
+    "pnl": 10284,
+    "exp": 21.6
+   },
+   "2026": {
+    "pnl": -594,
+    "exp": -4.0
+   }
+  }
+ },
+ "full_history_iv_0.6": {
+  "trades": 3459,
+  "total_pnl": 1180,
+  "losing_years": 13,
+  "max_dd_usd": -34462,
+  "longest_underwater_days": 6215,
+  "t_stat": 0.65,
+  "expectancy_on_premium": 1.1,
+  "by_year": {
+   "2007": {
+    "pnl": 4313,
+    "exp": 9.4
+   },
+   "2008": {
+    "pnl": 15043,
+    "exp": 27.6
+   },
+   "2009": {
+    "pnl": -4243,
+    "exp": -6.8
+   },
+   "2010": {
+    "pnl": -4619,
+    "exp": -7.5
+   },
+   "2011": {
+    "pnl": -973,
+    "exp": -0.6
+   },
+   "2012": {
+    "pnl": -4105,
+    "exp": -6.6
+   },
+   "2013": {
+    "pnl": -2029,
+    "exp": -2.5
+   },
+   "2014": {
+    "pnl": -3335,
+    "exp": -4.7
+   },
+   "2015": {
+    "pnl": 1159,
+    "exp": 3.2
+   },
+   "2016": {
+    "pnl": -4337,
+    "exp": -7.1
+   },
+   "2017": {
+    "pnl": -5784,
+    "exp": -10.0
+   },
+   "2018": {
+    "pnl": 9486,
+    "exp": 17.7
+   },
+   "2019": {
+    "pnl": -6570,
+    "exp": -12.4
+   },
+   "2020": {
+    "pnl": -2225,
+    "exp": -3.7
+   },
+   "2021": {
+    "pnl": -4581,
+    "exp": -8.7
+   },
+   "2022": {
+    "pnl": 13084,
+    "exp": 24.6
+   },
+   "2023": {
+    "pnl": 3263,
+    "exp": 6.4
+   },
+   "2024": {
+    "pnl": -3395,
+    "exp": -5.6
+   },
+   "2025": {
+    "pnl": 3202,
+    "exp": 7.0
+   },
+   "2026": {
+    "pnl": -2174,
+    "exp": -16.1
+   }
+  }
+ }
+}

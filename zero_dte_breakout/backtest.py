@@ -95,7 +95,7 @@ class Params:
     iv_mult: float = 1.0            # 0DTE ATM IV = iv_mult * VIX_open
     slippage: float = 0.02          # $/share paid on entry AND given up on exit
     commission: float = 0.65        # $/contract per side
-    risk_mode: str = "pct"          # "pct" (compounding) or "fixed"
+    risk_mode: str = "pct"          # "pct" (compounding), "fixed" ($ risk) or "contracts" (fixed count)
     risk: float = 0.03              # 3% of equity (=$300 on $10k) or $ amount
     start_equity: float = 10_000.0
     long_only: bool = False
@@ -211,8 +211,11 @@ def run(data, vix: pd.Series, p: Params):
         exit_px = max(exit_mid - p.slippage, 0.0)
         budget = equity * p.risk if p.risk_mode == "pct" else p.risk
         cost1 = prem * 100 + p.commission
-        n = budget / cost1 if p.fractional else int(budget // cost1)
-        if n < 1 and not p.fractional:
+        if p.risk_mode == "contracts":
+            n = p.risk
+        else:
+            n = budget / cost1 if p.fractional else int(budget // cost1)
+        if p.risk_mode != "contracts" and n < 1 and not p.fractional:
             # buy one contract if it is within 1.5x budget, otherwise skip the day
             if cost1 <= 1.5 * budget and cost1 <= equity:
                 n = 1
